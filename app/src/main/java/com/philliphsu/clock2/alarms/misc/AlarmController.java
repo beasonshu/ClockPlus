@@ -34,12 +34,15 @@ import com.philliphsu.clock2.alarms.Alarm;
 import com.philliphsu.clock2.alarms.background.PendingAlarmScheduler;
 import com.philliphsu.clock2.alarms.background.UpcomingAlarmReceiver;
 import com.philliphsu.clock2.alarms.data.AlarmsTableManager;
+import com.philliphsu.clock2.alarms.ui.HolidayManager;
 import com.philliphsu.clock2.ringtone.AlarmActivity;
 import com.philliphsu.clock2.ringtone.playback.AlarmRingtoneService;
 import com.philliphsu.clock2.util.ContentIntentUtils;
 import com.philliphsu.clock2.util.DelayedSnackbarHandler;
 import com.philliphsu.clock2.util.DurationUtils;
 import com.philliphsu.clock2.util.ParcelableUtil;
+
+import java.util.Date;
 
 import static android.app.PendingIntent.FLAG_CANCEL_CURRENT;
 import static android.app.PendingIntent.FLAG_NO_CREATE;
@@ -85,6 +88,9 @@ public final class AlarmController {
      */
     public void scheduleAlarm(Alarm alarm, boolean showSnackbar) {
         if (!alarm.isEnabled()) {
+            return;
+        }
+        if (alarm.isSkipHoliday()&&HolidayManager.checkWorkDay(new Date())>0){
             return;
         }
         // Does nothing if it's not posted. This is primarily here for when alarms

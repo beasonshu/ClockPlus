@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.os.Vibrator;
 import android.support.annotation.IdRes;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ import com.philliphsu.clock2.timepickers.Utils;
 import com.philliphsu.clock2.util.FragmentTagUtils;
 
 import butterknife.Bind;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 /**
@@ -55,6 +57,7 @@ public class ExpandedAlarmViewHolder extends BaseAlarmViewHolder {
     @Bind(R.id.ok) Button mOk;
     @Bind(R.id.delete) Button mDelete;
     @Bind(R.id.ringtone) Button mRingtone;
+    @Bind(R.id.skip_holiday_switch)  SwitchCompat mSkipHoliday;
     @Bind(R.id.vibrate) TempCheckableImageButton mVibrate;
     @Bind({R.id.day0, R.id.day1, R.id.day2, R.id.day3, R.id.day4, R.id.day5, R.id.day6})
     ToggleButton[] mDays;
@@ -131,6 +134,18 @@ public class ExpandedAlarmViewHolder extends BaseAlarmViewHolder {
         );
     }
 
+    @OnCheckedChanged(R.id.skip_holiday_switch)
+    void holidayToggle(boolean checked) {
+        final Alarm oldAlarm = getAlarm();
+        Alarm newAlarm = oldAlarm.toBuilder().build();
+        oldAlarm.copyMutableFieldsTo(newAlarm);
+        // ---------------------------------------------------------------------------------
+        // TOneverDO: precede copyMutableFieldsTo()
+        newAlarm.setSkipHoliday(checked);
+        // ---------------------------------------------------------------------------------
+        persistUpdatedAlarm(newAlarm, true);
+    }
+
     @Override
     public void onBind(Alarm alarm) {
         super.onBind(alarm);
@@ -138,6 +153,7 @@ public class ExpandedAlarmViewHolder extends BaseAlarmViewHolder {
         bindDays(alarm);
         bindRingtone();
         bindVibrate(alarm.vibrates());
+        bindSkipHoliday(alarm.isSkipHoliday());
     }
 
     @Override
@@ -231,6 +247,10 @@ public class ExpandedAlarmViewHolder extends BaseAlarmViewHolder {
     private void bindVibrate(boolean vibrates) {
         Utils.setTintList(mVibrate, mVibrate.getDrawable(), mVibrateColors);
         mVibrate.setChecked(vibrates);
+    }
+
+    private void bindSkipHoliday(boolean skipHoliday){
+        mSkipHoliday.setChecked(skipHoliday);
     }
 
     private Uri getSelectedRingtoneUri() {

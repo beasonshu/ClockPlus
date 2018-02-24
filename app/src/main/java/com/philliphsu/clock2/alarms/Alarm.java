@@ -45,6 +45,16 @@ public abstract class Alarm extends ObjectWithId implements Parcelable {
     // =================== MUTABLE =======================
     private long snoozingUntilMillis;
     private boolean enabled;
+
+    public boolean isSkipHoliday() {
+        return skipHoliday;
+    }
+
+    public void setSkipHoliday(boolean skipHoliday) {
+        this.skipHoliday = skipHoliday;
+    }
+
+    private boolean skipHoliday;
     private final boolean[] recurringDays = new boolean[NUM_DAYS];
     private boolean ignoreUpcomingRingTime;
     // ====================================================
@@ -66,6 +76,7 @@ public abstract class Alarm extends ObjectWithId implements Parcelable {
         target.setId(this.getId());
         target.snoozingUntilMillis = this.snoozingUntilMillis;
         target.enabled = this.enabled;
+        target.skipHoliday = this.skipHoliday;
         System.arraycopy(this.recurringDays, 0, target.recurringDays, 0, NUM_DAYS);
         target.ignoreUpcomingRingTime = this.ignoreUpcomingRingTime;
     }
@@ -252,6 +263,7 @@ public abstract class Alarm extends ObjectWithId implements Parcelable {
         dest.writeLong(getId());
         dest.writeLong(snoozingUntilMillis);
         dest.writeInt(enabled ? 1 : 0);
+        dest.writeInt(skipHoliday ? 1 : 0);
         dest.writeBooleanArray(recurringDays);
         dest.writeInt(ignoreUpcomingRingTime ? 1 : 0);
     }
@@ -267,6 +279,7 @@ public abstract class Alarm extends ObjectWithId implements Parcelable {
         alarm.setId(in.readLong());
         alarm.snoozingUntilMillis = in.readLong();
         alarm.enabled = in.readInt() != 0;
+        alarm.skipHoliday = in.readInt() != 0;
         in.readBooleanArray(alarm.recurringDays);
         alarm.ignoreUpcomingRingTime = in.readInt() != 0;
         return alarm;

@@ -81,6 +81,7 @@ public class AlarmsTableManager extends DatabaseTableManager<Alarm> {
         values.put(AlarmsTable.COLUMN_RINGTONE, alarm.ringtone());
         values.put(AlarmsTable.COLUMN_VIBRATES, alarm.vibrates());
         values.put(AlarmsTable.COLUMN_ENABLED, alarm.isEnabled());
+        values.put(AlarmsTable.COLUMN_IS_SKIP_HOLIDAY, alarm.isSkipHoliday());
         values.put(AlarmsTable.COLUMN_RING_TIME_MILLIS, alarm.ringsAt());
         values.put(AlarmsTable.COLUMN_SNOOZING_UNTIL_MILLIS, alarm.snoozingUntil());
         values.put(AlarmsTable.COLUMN_SUNDAY, alarm.isRecurring(SUNDAY));
